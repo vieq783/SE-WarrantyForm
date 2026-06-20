@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solar E – Phiếu Sửa Chữa / Bảo Hành</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .page-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: #1a6fc4;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .header-text h1 {
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .header-text p {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .setup-banner {
+      background: #fff8e6;
+      border: 1px solid #f5c04b;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 1.25rem;
+      font-size: 13px;
+      color: #7a5200;
+    }
+
+    .setup-banner strong { display: block; margin-bottom: 6px; }
+
+    .url-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .url-row input {
+      flex: 1;
+      font-size: 13px;
+      padding: 7px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .url-row input:focus { border-color: #1a6fc4; }
+
+    .btn-save {
+      background: #1a6fc4;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    label .req { color: #e24b4a; margin-left: 2px; }
+
+    input[type="date"],
+    input[type="text"],
+    select,
+    textarea {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 9px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      color: #1a1a1a;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #1a6fc4;
+      box-shadow: 0 0 0 3px rgba(26,111,196,0.1);
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    .vat-tu-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .vt-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vt-row select { flex: 1; }
+
+    .sep {
+      font-size: 14px;
+      color: #aaa;
+      user-select: none;
+    }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #bbb;
+      font-size: 20px;
+      line-height: 1;
+      padding: 0 2px;
+      transition: color 0.15s;
+    }
+
+    .btn-remove:hover { color: #e24b4a; }
+
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      padding: 7px 14px;
+      font-size: 13px;
+      color: #1a6fc4;
+      background: none;
+      border: 1px dashed #1a6fc4;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .btn-add:hover { background: #e8f2fd; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #f0f0f0;
+      margin: 1.25rem 0;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-reset {
+      background: none;
+      border: 1px solid #ddd;
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      color: #666;
+      transition: background 0.15s;
+    }
+
+    .btn-reset:hover { background: #f5f5f5; }
+
+    .btn-submit {
+      background: #1a6fc4;
+      color: #fff;
+      border: none;
+      padding: 9px 26px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .btn-submit:hover { background: #155da0; }
+    .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1d9e75;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .toast.error { background: #e24b4a; }
+
+    .card-footer {
+      padding: 10px 1.5rem;
+      background: #f9f9f9;
+      border-top: 1px solid #f0f0f0;
+      font-size: 12px;
+      color: #aaa;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+      .card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="card">
+    <div class="card-header">
+      <div class="logo">Solar E</div>
+      <div class="header-text">
+        <h1>Phiếu Sửa Chữa / Bảo Hành</h1>
+        <p>Điền đầy đủ thông tin trước khi gửi</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Setup banner: ẩn đi sau khi đã nhập URL -->
+      <div class="setup-banner" id="setupBanner">
+        <strong>⚙️ Thiết lập lần đầu (dành cho quản trị viên)</strong>
+        Dán URL Google Apps Script để kích hoạt ghi dữ liệu vào Google Sheets.
+        <div class="url-row">
+          <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+          <button class="btn-save" onclick="saveUrl()">Lưu</button>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="ngay">Ngày <span class="req">*</span></label>
+          <input type="date" id="ngay" />
+        </div>
+
+        <div class="form-group">
+          <label for="soSC">Số sửa chữa <span class="req">*</span></label>
+          <input type="text" id="soSC" placeholder="VD: SC-2024-001" />
+        </div>
+
+        <div class="form-group full">
+          <label for="model">Model máy <span class="req">*</span></label>
+          <select id="model">
+            <option value="">-- Chọn model máy --</option>
+            <option>Solar Inverter SL-1K</option>
+            <option>Solar Inverter SL-3K</option>
+            <option>Solar Inverter SL-5K</option>
+            <option>Solar Inverter SL-10K</option>
+            <option>Solar Battery Pack SB-48V</option>
+            <option>Solar Battery Pack SB-72V</option>
+            <option>Solar Controller SC-30A</option>
+            <option>Solar Controller SC-60A</option>
+            <option>Solar Panel 400W Mono</option>
+            <option>Solar Panel 550W Mono</option>
+            <option>Hybrid Inverter HY-5K</option>
+            <option>Hybrid Inverter HY-10K</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label>Vật tư / Thiết bị sửa chữa <span class="req">*</span></label>
+          <div class="vat-tu-list" id="vatTuList">
+            <div class="vt-row">
+              <select class="vt-select">
+                <option value="">-- Chọn vật tư --</option>
+                <option>Tụ điện 450V 1000uF</option>
+                <option>IGBT Module 150A</option>
+                <option>Biến áp xung 5W</option>
+                <option>Bo mạch điều khiển</option>
+                <option>Quạt tản nhiệt 12V</option>
+                <option>Cầu chì 63A</option>
+                <option>Relay 24V 10A</option>
+                <option>Màn hình LCD 2.8"</option>
+                <option>Dây cáp DC 10AWG</option>
+                <option>Connector MC4</option>
+                <option>Ắc quy 12V 100Ah</option>
+                <option>Modul Wifi/BLE</option>
+                <option>Vỏ nhựa thay thế</option>
+                <option>Bảng mạch MPPT</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-add" onclick="addVatTu()">+ Thêm vật tư</button>
+        </div>
+
+        <div class="form-group full">
+          <label for="ghiChu">Ghi chú</label>
+          <textarea id="ghiChu" placeholder="Mô tả tình trạng, lỗi gặp phải hoặc yêu cầu đặc biệt..."></textarea>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="form-actions">
+        <button class="btn-reset" onclick="resetForm()">Làm mới</button>
+        <button class="btn-submit" id="submitBtn" onclick="submitForm()">Gửi phiếu →</button>
+      </div>
+    </div>
+
+    <div class="card-footer">Solar E &copy; 2024 – Phiếu sửa chữa / bảo hành</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const STORAGE_KEY = 'solarE_scriptUrl';
+  let scriptUrl = localStorage.getItem(STORAGE_KEY) || '';
+
+  // Khởi tạo
+  (function init() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('ngay').value = today;
+    if (scriptUrl) {
+      document.getElementById('scriptUrl').value = scriptUrl;
+      document.getElementById('setupBanner').style.display = 'none';
+    }
+  })();
+
+  // Lưu URL Script
+  function saveUrl() {
+    const val = document.getElementById('scriptUrl').value.trim();
+    if (!val.startsWith('https://script.google.com')) {
+      showToast('URL không hợp lệ. Hãy dán đúng URL từ Apps Script.', true);
+      return;
+    }
+    scriptUrl = val;
+    localStorage.setItem(STORAGE_KEY, val);
+    document.getElementById('setupBanner').style.display = 'none';
+    showToast('Đã lưu URL thành công!');
+  }
+
+  // Danh sách vật tư options (dùng chung)
+  const vatTuOptions = [
+    'Tụ điện 450V 1000uF', 'IGBT Module 150A', 'Biến áp xung 5W',
+    'Bo mạch điều khiển', 'Quạt tản nhiệt 12V', 'Cầu chì 63A',
+    'Relay 24V 10A', 'Màn hình LCD 2.8"', 'Dây cáp DC 10AWG',
+    'Connector MC4', 'Ắc quy 12V 100Ah', 'Modul Wifi/BLE',
+    'Vỏ nhựa thay thế', 'Bảng mạch MPPT'
+  ];
+
+  function buildSelect() {
+    const opts = vatTuOptions.map(o => `<option>${o}</option>`).join('');
+    return `<select class="vt-select"><option value="">-- Chọn vật tư --</option>${opts}</select>`;
+  }
+
+  // Thêm dòng vật tư
+  function addVatTu() {
+    const list = document.getElementById('vatTuList');
+    const row = document.createElement('div');
+    row.className = 'vt-row';
+    row.innerHTML = `<span class="sep">—</span>${buildSelect()}<button class="btn-remove" onclick="this.parentElement.remove()" title="Xóa">×</button>`;
+    list.appendChild(row);
+  }
+
+  // Lấy danh sách vật tư đã chọn
+  function getVatTu() {
+    return Array.from(document.querySelectorAll('.vt-select'))
+      .map(s => s.value).filter(Boolean).join(' — ');
+  }
+
+  // Toast thông báo
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '');
+    t.style.display = 'block';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
+  }
+
+  // Làm mới form
+  function resetForm() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('ngay').value = today;
+    document.getElementById('soSC').value = '';
+    document.getElementById('model').value = '';
+    document.getElementById('ghiChu').value = '';
+    document.getElementById('vatTuList').innerHTML = `<div class="vt-row">${buildSelect()}</div>`;
+  }
+
+  // Gửi form
+  async function submitForm() {
+    const ngay   = document.getElementById('ngay').value;
+    const soSC   = document.getElementById('soSC').value.trim();
+    const model  = document.getElementById('model').value;
+    const vatTu  = getVatTu();
+    const ghiChu = document.getElementById('ghiChu').value.trim();
+
+    if (!ngay || !soSC || !model || !vatTu) {
+      showToast('Vui lòng điền đầy đủ các trường bắt buộc (*)', true);
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Đang gửi...';
+
+    const payload = {
+      thoiGian: new Date().toLocaleString('vi-VN'),
+      ngay, soSC, model, vatTu, ghiChu
+    };
+
+    if (!scriptUrl) {
+      setTimeout(() => {
+        showToast('⚠️ Chưa cấu hình URL Script. Liên hệ quản trị viên.', true);
+        btn.disabled = false;
+        btn.textContent = 'Gửi phiếu →';
+      }, 400);
+      return;
+    }
+
+    try {
+      await fetch(scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      showToast('✓ Phiếu đã gửi thành công lên Google Sheets!');
+      resetForm();
+    } catch (err) {
+      showToast('Lỗi kết nối. Kiểm tra lại URL Script.', true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Gửi phiếu →';
+    }
+  }
+</script>
+</body>
+</html>
