@@ -8,20 +8,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F6F2EA;
+    --bg:#F2F5FA;
     --surface:#FFFFFF;
-    --ink:#1B3A4B;
-    --ink-soft:#5B7686;
-    --accent:#E8A33D;
-    --accent-dark:#C8842A;
-    --accent-soft:#FBE8C8;
-    --line:#E6DECC;
-    --success:#3F9C6D;
-    --success-soft:#E1F3EA;
+    --ink:#1B2A3A;
+    --ink-soft:#6C7B8C;
+    --accent:#1C64D1;
+    --accent-dark:#154FA8;
+    --accent-soft:#E4EEFD;
+    --line:#E3E8EF;
+    --success:#2FA86B;
+    --success-soft:#E1F5EA;
     --danger:#D6584A;
     --danger-soft:#FBE5E1;
     --radius:14px;
-    --shadow:0 4px 18px rgba(27,58,75,0.08);
+    --shadow:0 4px 18px rgba(20,40,70,0.08);
   }
   *{box-sizing:border-box;}
   body{
@@ -30,39 +30,67 @@
     color:var(--ink);
     font-family:'Inter',system-ui,sans-serif;
     -webkit-font-smoothing:antialiased;
-    padding-bottom:60px;
-  }
-  .topbar{
-    height:6px;
-    background:linear-gradient(90deg,var(--accent-dark),var(--accent) 50%,#F6CE8C);
-  }
-  .hero{
-    text-align:center;
-    padding:32px 20px 22px;
-  }
-  .sun-badge{
-    width:52px;height:52px;margin:0 auto 10px;
-  }
-  .hero h1{
-    font-family:'Manrope',sans-serif;
-    font-weight:800;
-    font-size:26px;
-    letter-spacing:0.3px;
-    margin:0;
-    color:var(--ink);
-  }
-  .hero p{
-    margin:4px 0 0;
-    font-size:14.5px;
-    color:var(--ink-soft);
-    font-weight:600;
-    letter-spacing:0.4px;
+    padding-bottom:30px;
   }
   .container{
     max-width:560px;
     margin:0 auto;
     padding:0 16px;
   }
+
+  /* ---------- Header (blue banner with logo) ---------- */
+  .app-header{
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    border-radius:18px;
+    padding:18px 20px;
+    margin:18px 0 16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 8px 20px rgba(21,79,168,0.28);
+  }
+  .logo-badge{
+    background:rgba(255,255,255,0.95);
+    border-radius:10px;
+    padding:6px 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    min-width:54px;
+    min-height:36px;
+  }
+  .logo-badge img{
+    height:28px;
+    max-width:90px;
+    width:auto;
+    display:block;
+    object-fit:contain;
+  }
+  .logo-fallback-text{
+    font-family:'Manrope',sans-serif;
+    font-weight:800;
+    color:var(--accent-dark);
+    font-size:14px;
+    padding:2px 4px;
+    white-space:nowrap;
+  }
+  .header-text h1{
+    margin:0;
+    font-family:'Manrope',sans-serif;
+    font-weight:800;
+    font-size:18.5px;
+    color:#fff;
+    letter-spacing:0.2px;
+  }
+  .header-text p{
+    margin:3px 0 0;
+    font-size:12.5px;
+    color:#D6E6FB;
+    font-weight:500;
+  }
+
+  /* ---------- Card / form ---------- */
   .card{
     background:var(--surface);
     border-radius:var(--radius);
@@ -72,15 +100,16 @@
     margin-bottom:18px;
   }
   .field{margin-bottom:18px;}
+  .field-row{display:flex; gap:14px;}
+  .field-row .field{flex:1;}
   .field label{
     display:block;
     font-size:13px;
     font-weight:700;
     color:var(--ink-soft);
-    text-transform:uppercase;
-    letter-spacing:0.5px;
     margin-bottom:7px;
   }
+  .required-mark{color:#E0483E; margin-left:2px;}
   input[type=text], input[type=date], select, textarea{
     width:100%;
     padding:11px 13px;
@@ -89,7 +118,7 @@
     font-size:15px;
     font-family:'Inter',sans-serif;
     color:var(--ink);
-    background:#FFFCF8;
+    background:#FBFCFE;
     transition:border-color .15s, box-shadow .15s;
   }
   input:focus, select:focus, textarea:focus{
@@ -98,8 +127,38 @@
     box-shadow:0 0 0 3px var(--accent-soft);
   }
   textarea{resize:vertical;min-height:70px;}
-  .row-inline{display:flex; gap:8px;}
-  .row-inline select{flex:1;}
+
+  /* ---------- Vật tư rows ---------- */
+  .vattu-row{display:flex; gap:8px; margin-bottom:8px;}
+  .vattu-row select{flex:1;}
+  .btn-remove-row{
+    border:none;
+    background:var(--danger-soft);
+    color:var(--danger);
+    width:42px;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .btn-remove-row:hover{opacity:0.8;}
+  .btn-dashed{
+    width:100%;
+    background:transparent;
+    border:1.5px dashed var(--accent);
+    color:var(--accent-dark);
+    border-radius:10px;
+    padding:11px;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:2px;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-dashed:hover{background:var(--accent-soft);}
+
+  /* ---------- Buttons ---------- */
   .btn-primary, .btn-secondary, .btn-danger, .btn-ghost{
     border:none;
     border-radius:10px;
@@ -108,63 +167,39 @@
     font-size:14.5px;
     cursor:pointer;
     padding:11px 18px;
-    transition:transform .08s, opacity .15s;
+    transition:transform .08s, opacity .15s, background .15s;
   }
   .btn-primary{
-    width:100%;
     background:var(--accent);
     color:#fff;
-    padding:13px 18px;
-    font-size:15.5px;
-    box-shadow:0 3px 10px rgba(232,163,61,0.35);
+    box-shadow:0 3px 10px rgba(28,100,209,0.3);
   }
   .btn-primary:hover{background:var(--accent-dark);}
   .btn-primary:active{transform:scale(0.99);}
-  .btn-secondary{
-    background:var(--ink);
-    color:#fff;
-    white-space:nowrap;
-  }
-  .btn-secondary:hover{background:#274d63;}
+  .btn-secondary{background:var(--ink); color:#fff;}
+  .btn-secondary:hover{background:#2c4258;}
   .btn-danger{background:var(--danger); color:#fff;}
   .btn-danger:hover{opacity:0.85;}
   .btn-ghost{
-    background:transparent;
+    background:#fff;
     color:var(--ink-soft);
     border:1.5px solid var(--line);
   }
   .btn-ghost:hover{border-color:var(--ink-soft);}
-  .tag-list{
+
+  .form-actions{
     display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:10px;
+    justify-content:flex-end;
+    gap:10px;
+    border-top:1px solid var(--line);
+    padding-top:18px;
+    margin-top:6px;
   }
-  .tag{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    background:var(--accent-soft);
-    color:var(--accent-dark);
-    border-radius:20px;
-    padding:6px 6px 6px 13px;
-    font-size:13.5px;
-    font-weight:600;
-  }
-  .tag button{
-    border:none;
-    background:rgba(0,0,0,0.08);
-    color:var(--accent-dark);
-    width:20px;height:20px;
-    border-radius:50%;
-    cursor:pointer;
-    font-size:13px;
-    line-height:1;
-    font-weight:700;
-  }
+  .form-actions button{padding:12px 22px;}
+
   .admin-link{
     display:block;
-    margin:6px auto 24px;
+    margin:2px auto 18px;
     background:none;
     border:none;
     color:var(--ink-soft);
@@ -176,6 +211,8 @@
     width:100%;
   }
   .hidden{display:none !important;}
+
+  /* ---------- Admin ---------- */
   .admin-panel h2{
     font-family:'Manrope',sans-serif;
     font-size:17px;
@@ -223,7 +260,7 @@
     background:var(--bg);
     border-radius:8px;
     padding:10px 12px;
-    margin-top:4px;
+    margin-top:8px;
     line-height:1.5;
   }
   .toast{
@@ -245,65 +282,72 @@
   .toast.success{background:var(--success);}
   .toast.error{background:var(--danger);}
   .empty-msg{font-size:13px; color:var(--ink-soft); font-style:italic; margin:4px 0 8px;}
+
+  .app-footer{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    padding:10px 0 0;
+  }
+
   @media (max-width:420px){
-    .hero h1{font-size:22px;}
+    .header-text h1{font-size:16.5px;}
     .card{padding:20px 16px;}
+    .field-row{flex-direction:column; gap:0;}
   }
 </style>
 </head>
 <body>
 
-<div class="topbar"></div>
-<header class="hero">
-  <svg class="sun-badge" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="22" fill="#E8A33D"/>
-    <g stroke="#C8842A" stroke-width="5" stroke-linecap="round">
-      <line x1="50" y1="6" x2="50" y2="18"/>
-      <line x1="50" y1="82" x2="50" y2="94"/>
-      <line x1="6" y1="50" x2="18" y2="50"/>
-      <line x1="82" y1="50" x2="94" y2="50"/>
-      <line x1="18" y1="18" x2="26" y2="26"/>
-      <line x1="74" y1="74" x2="82" y2="82"/>
-      <line x1="82" y1="18" x2="74" y2="26"/>
-      <line x1="26" y1="74" x2="18" y2="82"/>
-    </g>
-  </svg>
-  <h1>Solar E</h1>
-  <p>PHIẾU SỬA CHỮA / BẢO HÀNH</p>
-</header>
-
 <main class="container">
 
+  <header class="app-header">
+    <div class="logo-badge">
+      <img id="logoImg" src="SElogo.png" alt="Solar E">
+    </div>
+    <div class="header-text">
+      <h1>Phiếu Sửa Chữa / Bảo Hành</h1>
+      <p>Điền đầy đủ thông tin trước khi gửi</p>
+    </div>
+  </header>
+
   <form id="repairForm" class="card">
-    <div class="field">
-      <label for="ngay">Ngày</label>
-      <input type="date" id="ngay" required>
+    <div class="field-row">
+      <div class="field">
+        <label for="ngay">Ngày<span class="required-mark">*</span></label>
+        <input type="date" id="ngay" required>
+      </div>
+      <div class="field">
+        <label for="soSuaChua">Số sửa chữa<span class="required-mark">*</span></label>
+        <input type="text" id="soSuaChua" placeholder="VD: SC-2024-001" required>
+      </div>
     </div>
+
     <div class="field">
-      <label for="soSuaChua">Số sửa chữa</label>
-      <input type="text" id="soSuaChua" placeholder="VD: SC-0001" required>
-    </div>
-    <div class="field">
-      <label for="loaiMaySelect">Loại máy</label>
+      <label for="loaiMaySelect">Loại máy<span class="required-mark">*</span></label>
       <select id="loaiMaySelect" required></select>
     </div>
+
     <div class="field">
-      <label for="modelSelect">Model máy</label>
+      <label for="modelSelect">Model máy<span class="required-mark">*</span></label>
       <select id="modelSelect" required></select>
     </div>
+
     <div class="field">
-      <label for="vatTuSelect">Vật tư / thiết bị sửa chữa</label>
-      <div class="row-inline">
-        <select id="vatTuSelect"></select>
-        <button type="button" class="btn-secondary" id="btnAddVatTu">Thêm</button>
-      </div>
-      <div class="tag-list" id="vatTuTags"></div>
+      <label>Vật tư / Thiết bị sửa chữa<span class="required-mark">*</span></label>
+      <div id="vatTuRows"></div>
+      <button type="button" id="btnAddVatTuRow" class="btn-dashed">+ Thêm vật tư</button>
     </div>
+
     <div class="field">
       <label for="ghiChu">Ghi chú</label>
-      <textarea id="ghiChu" placeholder="Ghi chú thêm..."></textarea>
+      <textarea id="ghiChu" placeholder="Mô tả tình trạng, lỗi gặp phải hoặc yêu cầu đặc biệt..."></textarea>
     </div>
-    <button type="submit" class="btn-primary">Gửi phiếu</button>
+
+    <div class="form-actions">
+      <button type="button" class="btn-ghost" id="btnReset">Làm mới</button>
+      <button type="submit" class="btn-primary">Gửi phiếu →</button>
+    </div>
   </form>
 
   <button class="admin-link" id="adminToggle">⚙ Quản trị (Admin)</button>
@@ -318,12 +362,8 @@
         <label for="scriptUrlInput">Link Google Apps Script (Web App URL)</label>
         <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
-      <div class="row-inline">
-        <button class="btn-ghost" id="btnSaveScriptUrl" style="flex:1;">💾 Lưu</button>
-        <button class="btn-secondary" id="btnTestConnection" style="flex:1;">🔌 Kết nối & Test</button>
-      </div>
+      <button class="btn-secondary" id="btnSaveAndTest" style="width:100%;">🔌 Lưu Script &amp; Test kết nối</button>
       <p class="note" id="connectionStatus">Chưa kết nối.</p>
-      <p class="note">"Lưu" chỉ lưu link vào trình duyệt này. "Kết nối &amp; Test" sẽ gọi thử tới Google Sheet để kiểm tra và tải dữ liệu hiện có về (sẽ ghi đè các chỉnh sửa Loại máy/Model/Vật tư chưa lưu ở dưới).</p>
     </div>
 
     <div class="admin-section">
@@ -336,7 +376,7 @@
     </div>
 
     <div class="admin-section">
-      <h3>Chọn loại máy để chỉnh sửa Model & Vật tư</h3>
+      <h3>Chọn loại máy để chỉnh sửa Model &amp; Vật tư</h3>
       <select id="editLoaiMaySelect" class="pill-select"></select>
     </div>
 
@@ -360,9 +400,12 @@
 
     <div class="admin-actions">
       <button class="btn-ghost" id="btnCloseAdmin">Đóng</button>
-      <button class="btn-primary" id="btnSaveConfig" style="flex:2;">Lưu cấu hình lên Google Sheet</button>
+      <button class="btn-primary" id="btnSaveConfig" style="flex:2;">Lưu cấu hình cho form</button>
     </div>
+    <p class="note">Nút trên chỉ lưu cấu hình Loại máy / Model / Vật tư cho form trên <strong>thiết bị này</strong> để dùng và kiểm tra ngay — chưa gửi/đồng bộ lên Google Sheet.</p>
   </section>
+
+  <footer class="app-footer">Solar E © 2026 – Phiếu sửa chữa / bảo hành</footer>
 
 </main>
 
@@ -386,7 +429,7 @@ const LS_CONFIG_CACHE = "solarE_configCache";
 let state = {
   scriptUrl: localStorage.getItem(LS_SCRIPT_URL) || "",
   config: loadCachedConfig(),
-  selectedVatTu: [],
+  vatTuSelections: [""],
   editingLoaiMay: null
 };
 
@@ -401,6 +444,14 @@ function cacheConfig(cfg){
   localStorage.setItem(LS_CONFIG_CACHE, JSON.stringify(cfg));
 }
 
+/* ---------------- Logo fallback ---------------- */
+document.getElementById('logoImg').addEventListener('error', function(){
+  const span = document.createElement('span');
+  span.className = 'logo-fallback-text';
+  span.textContent = 'Solar E';
+  this.replaceWith(span);
+});
+
 /* ---------------- Toast ---------------- */
 let toastTimer = null;
 function showToast(msg, type){
@@ -412,86 +463,103 @@ function showToast(msg, type){
   toastTimer = setTimeout(()=> t.classList.add('hidden'), 3200);
 }
 
-/* ---------------- Form: render selects ---------------- */
+/* ---------------- Form: Loại máy -> Model + Vật tư rows ---------------- */
 function renderLoaiMaySelect(){
   const sel = document.getElementById('loaiMaySelect');
+  const prevValue = sel.value;
   sel.innerHTML = '';
   state.config.loaiMay.forEach(name=>{
-    const opt = document.createElement('option');
-    opt.value = name; opt.textContent = name;
-    sel.appendChild(opt);
+    sel.appendChild(new Option(name, name));
   });
-  onLoaiMayChange();
+  if(state.config.loaiMay.includes(prevValue)){
+    sel.value = prevValue;
+  }
+  applyLoaiMayDependent();
 }
 
-function onLoaiMayChange(){
+function applyLoaiMayDependent(){
   const loaiMay = document.getElementById('loaiMaySelect').value;
   const modelSel = document.getElementById('modelSelect');
-  const vatTuSel = document.getElementById('vatTuSelect');
   modelSel.innerHTML = '';
-  vatTuSel.innerHTML = '';
-
-  const models = (state.config.models[loaiMay] || []);
+  const models = state.config.models[loaiMay] || [];
   if(models.length === 0){
     modelSel.appendChild(new Option('-- Chưa có model --',''));
   }else{
-    modelSel.appendChild(new Option('-- Chọn model --',''));
+    modelSel.appendChild(new Option('-- Chọn model máy --',''));
     models.forEach(m=> modelSel.appendChild(new Option(m,m)));
   }
-
-  const parts = (state.config.vatTu[loaiMay] || []);
-  if(parts.length === 0){
-    vatTuSel.appendChild(new Option('-- Chưa có vật tư --',''));
-  }else{
-    vatTuSel.appendChild(new Option('-- Chọn vật tư --',''));
-    parts.forEach(p=> vatTuSel.appendChild(new Option(p,p)));
-  }
-
-  state.selectedVatTu = [];
-  renderVatTuTags();
+  state.vatTuSelections = [""];
+  renderVatTuRows();
 }
-document.getElementById('loaiMaySelect').addEventListener('change', onLoaiMayChange);
+document.getElementById('loaiMaySelect').addEventListener('change', applyLoaiMayDependent);
 
-/* ---------------- Vật tư tag list (form) ---------------- */
-function renderVatTuTags(){
-  const wrap = document.getElementById('vatTuTags');
+/* ---------------- Vật tư rows (lặp lại khi bấm "+ Thêm vật tư") ---------------- */
+function renderVatTuRows(){
+  const loaiMay = document.getElementById('loaiMaySelect').value;
+  const parts = state.config.vatTu[loaiMay] || [];
+  const wrap = document.getElementById('vatTuRows');
   wrap.innerHTML = '';
-  state.selectedVatTu.forEach(name=>{
-    const tag = document.createElement('span');
-    tag.className = 'tag';
-    tag.innerHTML = `<span>${escapeHtml(name)}</span>`;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = '×';
-    btn.onclick = ()=>{
-      state.selectedVatTu = state.selectedVatTu.filter(n=>n!==name);
-      renderVatTuTags();
-    };
-    tag.appendChild(btn);
-    wrap.appendChild(tag);
+
+  state.vatTuSelections.forEach((val, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'vattu-row';
+
+    const sel = document.createElement('select');
+    if(parts.length === 0){
+      sel.appendChild(new Option('-- Chưa có vật tư --',''));
+      sel.disabled = true;
+    }else{
+      sel.appendChild(new Option('-- Chọn vật tư --',''));
+      parts.forEach(p=> sel.appendChild(new Option(p,p)));
+      sel.value = val || '';
+    }
+    sel.addEventListener('change', ()=>{ state.vatTuSelections[idx] = sel.value; });
+    row.appendChild(sel);
+
+    if(state.vatTuSelections.length > 1){
+      const rmBtn = document.createElement('button');
+      rmBtn.type = 'button';
+      rmBtn.className = 'btn-remove-row';
+      rmBtn.textContent = '×';
+      rmBtn.onclick = ()=>{
+        state.vatTuSelections.splice(idx, 1);
+        renderVatTuRows();
+      };
+      row.appendChild(rmBtn);
+    }
+
+    wrap.appendChild(row);
   });
 }
-document.getElementById('btnAddVatTu').addEventListener('click', ()=>{
-  const sel = document.getElementById('vatTuSelect');
-  const val = sel.value;
-  if(!val) return;
-  if(!state.selectedVatTu.includes(val)){
-    state.selectedVatTu.push(val);
-    renderVatTuTags();
-  }
+
+document.getElementById('btnAddVatTuRow').addEventListener('click', ()=>{
+  state.vatTuSelections.push('');
+  renderVatTuRows();
 });
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+/* ---------------- Reset form (Làm mới) ---------------- */
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  document.getElementById('ngay').valueAsDate = new Date();
+  document.getElementById('soSuaChua').value = '';
+  document.getElementById('ghiChu').value = '';
+  document.getElementById('loaiMaySelect').selectedIndex = 0;
+  applyLoaiMayDependent();
+});
 
 /* ---------------- Submit form ---------------- */
 document.getElementById('repairForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
+
+  const vatTuValues = state.vatTuSelections.filter(v=>v);
+  if(vatTuValues.length === 0){
+    showToast('Vui lòng chọn ít nhất 1 vật tư/thiết bị.', 'error');
+    return;
+  }
   if(!state.scriptUrl){
     showToast('Chưa cấu hình kết nối Google Sheet. Vui lòng liên hệ Admin.', 'error');
     return;
   }
+
   const payload = {
     action: 'submitForm',
     form: {
@@ -499,10 +567,11 @@ document.getElementById('repairForm').addEventListener('submit', async (e)=>{
       soSuaChua: document.getElementById('soSuaChua').value,
       loaiMay: document.getElementById('loaiMaySelect').value,
       model: document.getElementById('modelSelect').value,
-      vatTu: state.selectedVatTu.join('\n'),
+      vatTu: vatTuValues.join('\n'),
       ghiChu: document.getElementById('ghiChu').value
     }
   };
+
   const submitBtn = e.target.querySelector('.btn-primary');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Đang gửi...';
@@ -517,8 +586,8 @@ document.getElementById('repairForm').addEventListener('submit', async (e)=>{
       showToast('Đã gửi phiếu thành công!', 'success');
       document.getElementById('soSuaChua').value = '';
       document.getElementById('ghiChu').value = '';
-      state.selectedVatTu = [];
-      renderVatTuTags();
+      state.vatTuSelections = [''];
+      renderVatTuRows();
     } else {
       showToast('Lỗi: ' + (data.error || 'Không gửi được dữ liệu.'), 'error');
     }
@@ -526,31 +595,9 @@ document.getElementById('repairForm').addEventListener('submit', async (e)=>{
     showToast('Không kết nối được Google Sheet. Kiểm tra mạng hoặc link Script.', 'error');
   }finally{
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Gửi phiếu';
+    submitBtn.textContent = 'Gửi phiếu →';
   }
 });
-
-/* ---------------- Load config from server ---------------- */
-async function loadConfigFromServer(silent){
-  if(!state.scriptUrl) return;
-  try{
-    const res = await fetch(state.scriptUrl + '?action=getConfig');
-    const data = await res.json();
-    if(data && data.loaiMay){
-      state.config = data;
-      cacheConfig(data);
-      renderLoaiMaySelect();
-      if(!document.getElementById('adminPanel').classList.contains('hidden')){
-        renderAdminLoaiMayList();
-      }
-      if(!silent) showToast('Đã kết nối Google Sheet thành công!', 'success');
-      document.getElementById('connectionStatus').textContent = '✓ Đã kết nối.';
-    }
-  }catch(err){
-    if(!silent) showToast('Không kết nối được Google Sheet. Kiểm tra lại link Script.', 'error');
-    document.getElementById('connectionStatus').textContent = 'Chưa kết nối được. Dùng dữ liệu lưu tạm trên máy.';
-  }
-}
 
 /* =========================================================
    ADMIN
@@ -564,7 +611,9 @@ document.getElementById('adminToggle').addEventListener('click', ()=>{
   }
   document.getElementById('adminPanel').classList.remove('hidden');
   document.getElementById('scriptUrlInput').value = state.scriptUrl;
-  document.getElementById('connectionStatus').textContent = state.scriptUrl ? 'Đã có link đã lưu. Bấm "Kết nối & Test" để kiểm tra.' : 'Chưa có link nào được lưu.';
+  document.getElementById('connectionStatus').textContent = state.scriptUrl
+    ? 'Đã có link đã lưu. Bấm "Lưu Script & Test kết nối" để kiểm tra lại.'
+    : 'Chưa có link nào được lưu.';
   state.editingLoaiMay = state.config.loaiMay[0] || null;
   renderAdminLoaiMayList();
   renderEditLoaiMaySelect();
@@ -577,22 +626,19 @@ document.getElementById('btnCloseAdmin').addEventListener('click', ()=>{
   document.getElementById('adminPanel').classList.add('hidden');
 });
 
-document.getElementById('btnSaveScriptUrl').addEventListener('click', ()=>{
+/* ---- Lưu Script & Test kết nối (1 nút, chỉ kiểm tra — không ghi đè danh mục local) ---- */
+document.getElementById('btnSaveAndTest').addEventListener('click', async ()=>{
   const url = document.getElementById('scriptUrlInput').value.trim();
   if(!url){ showToast('Vui lòng nhập link Script.', 'error'); return; }
+
   state.scriptUrl = url;
   localStorage.setItem(LS_SCRIPT_URL, url);
-  document.getElementById('connectionStatus').textContent = 'Đã lưu link (chưa kiểm tra kết nối — bấm "Kết nối & Test" để kiểm tra).';
-  showToast('Đã lưu link Script.', 'success');
-});
 
-document.getElementById('btnTestConnection').addEventListener('click', async ()=>{
-  const url = document.getElementById('scriptUrlInput').value.trim();
-  if(!url){ showToast('Vui lòng nhập link Script.', 'error'); return; }
   const statusEl = document.getElementById('connectionStatus');
-  const btn = document.getElementById('btnTestConnection');
+  const btn = document.getElementById('btnSaveAndTest');
   btn.disabled = true;
-  statusEl.textContent = 'Đang kiểm tra kết nối...';
+  statusEl.textContent = 'Đang lưu & kiểm tra kết nối...';
+
   try{
     const sep = url.includes('?') ? '&' : '?';
     const res = await fetch(url + sep + 'action=getConfig');
@@ -601,29 +647,22 @@ document.getElementById('btnTestConnection').addEventListener('click', async ()=
     try{
       data = JSON.parse(text);
     }catch(parseErr){
-      statusEl.textContent = '✗ Phản hồi không phải JSON (có thể link sai, hoặc lúc Deploy chưa chọn "Anyone" trong "Who has access").';
-      showToast('Kết nối thất bại: phản hồi không hợp lệ.', 'error');
+      statusEl.textContent = '✗ Đã lưu link, nhưng phản hồi không phải JSON. Kiểm tra lại lúc Deploy đã chọn "Anyone" ở mục "Who has access" chưa.';
+      showToast('Đã lưu link, nhưng kết nối thất bại.', 'error');
       return;
     }
     if(data && data.loaiMay){
-      state.config = data;
-      cacheConfig(data);
-      renderLoaiMaySelect();
-      renderAdminLoaiMayList();
-      renderEditLoaiMaySelect();
-      renderModelList();
-      renderVatTuAdminList();
-      statusEl.textContent = `✓ Kết nối thành công! Đã tải ${data.loaiMay.length} loại máy từ Google Sheet.`;
+      statusEl.textContent = `✓ Đã lưu link & kết nối thành công! (Google Sheet hiện có ${data.loaiMay.length} loại máy)`;
       showToast('Kết nối Google Sheet thành công!', 'success');
     } else if(data && data.error){
-      statusEl.textContent = '✗ Script trả về lỗi: ' + data.error;
+      statusEl.textContent = '✗ Đã lưu link, nhưng script trả lỗi: ' + data.error;
       showToast('Kết nối thất bại: ' + data.error, 'error');
     } else {
       statusEl.textContent = '✗ Phản hồi không đúng định dạng mong đợi.';
       showToast('Kết nối thất bại.', 'error');
     }
   }catch(err){
-    statusEl.textContent = '✗ Không gọi được tới link này (lỗi mạng, CORS, hoặc link sai).';
+    statusEl.textContent = '✗ Đã lưu link, nhưng không gọi được tới Script (lỗi mạng, CORS, hoặc link sai).';
     showToast('Không kết nối được Google Sheet.', 'error');
   }finally{
     btn.disabled = false;
@@ -796,40 +835,17 @@ document.getElementById('btnAddVatTuItem').addEventListener('click', ()=>{
   renderVatTuAdminList();
 });
 
-/* ---- Save config to server ---- */
-document.getElementById('btnSaveConfig').addEventListener('click', async ()=>{
-  if(!state.scriptUrl){
-    showToast('Vui lòng nhập & lưu link Script trước.', 'error');
-    return;
-  }
-  const btn = document.getElementById('btnSaveConfig');
-  btn.disabled = true; btn.textContent = 'Đang lưu...';
-  try{
-    const res = await fetch(state.scriptUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'saveConfig', config: state.config })
-    });
-    const data = await res.json();
-    if(data.success){
-      cacheConfig(state.config);
-      renderLoaiMaySelect();
-      showToast('Đã lưu cấu hình lên Google Sheet!', 'success');
-    } else {
-      showToast('Lỗi khi lưu: ' + (data.error || ''), 'error');
-    }
-  }catch(err){
-    showToast('Không kết nối được Google Sheet.', 'error');
-  }finally{
-    btn.disabled = false; btn.textContent = 'Lưu cấu hình lên Google Sheet';
-  }
+/* ---- Lưu cấu hình cho form (CHỈ local — không gọi Google Sheet) ---- */
+document.getElementById('btnSaveConfig').addEventListener('click', ()=>{
+  cacheConfig(state.config);
+  renderLoaiMaySelect();
+  showToast('Đã lưu cấu hình cho form trên thiết bị này.', 'success');
 });
 
 /* ---------------- Init ---------------- */
 (function init(){
   document.getElementById('ngay').valueAsDate = new Date();
   renderLoaiMaySelect();
-  if(state.scriptUrl) loadConfigFromServer(true);
 })();
 </script>
 </body>
