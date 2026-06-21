@@ -123,6 +123,50 @@
   }
   textarea{resize:vertical;min-height:70px;}
 
+  /* ---------- Ngày: 1 khung viền chung chứa 3 ô dd/mm/yyyy ---------- */
+  .ngay-group{
+    display:flex;
+    align-items:center;
+    width:100%;
+    padding:11px 13px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FBFCFE;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .ngay-group:focus-within{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .ngay-group input{
+    border:none;
+    background:transparent;
+    padding:0;
+    text-align:center;
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    width:100%;
+    min-width:0;
+  }
+  .ngay-group input:focus{
+    outline:none;
+    box-shadow:none;
+  }
+  .ngay-group input#ngayDD,
+  .ngay-group input#ngayMM{
+    flex:0.1 0.1 5px;
+  }
+  .ngay-group input#ngayYYYY{
+    flex:0 0 41px;
+  }
+  .ngay-group .ngay-sep{
+    color:var(--ink-soft);
+    font-weight:700;
+    padding:0 2px;
+    flex-shrink:0;
+  }
+
   /* ---------- Vật tư rows ---------- */
   .vattu-row{display:flex; gap:8px; margin-bottom:8px;}
   .vattu-row select{flex:1;}
@@ -309,12 +353,19 @@
   <form id="repairForm" class="card">
     <div class="field-row">
       <div class="field">
-        <label for="ngay">Ngày<span class="required-mark">*</span></label>
-        <input type="date" id="ngay" required>
+        <label for="ngayDD">Ngày<span class="required-mark">*</span></label>
+        <div id="ngayGroup" class="ngay-group">
+          <input type="text" id="ngayDD" placeholder="dd" inputmode="numeric" maxlength="2" required>
+          <span class="ngay-sep">/</span>
+          <input type="text" id="ngayMM" placeholder="mm" inputmode="numeric" maxlength="2" required>
+          <span class="ngay-sep">/</span>
+          <input type="text" id="ngayYYYY" placeholder="yyyy" inputmode="numeric" maxlength="4" required>
+        </div>
+        <small id="ngayWarning" style="color:var(--danger); display:none; font-size:12px; margin-top:4px;"></small>
       </div>
       <div class="field">
         <label for="soSuaChua">Số sửa chữa<span class="required-mark">*</span></label>
-        <input type="text" id="soSuaChua" placeholder="VD: 20/06/2026-1" required>
+        <input type="text" id="soSuaChua" placeholder="VD: 25/02/2026-1" required>
       </div>
     </div>
 
@@ -329,8 +380,8 @@
     </div>
 
     <div class="field">
-      <label for="snMay">SN máy</label>
-      <input type="text" id="snMay" placeholder="VD: 11024001012854">
+      <label for="snMay">SN máy<span class="required-mark">*</span></label>
+      <input type="text" id="snMay" placeholder="VD: P01262252" required>
     </div>
 
     <div class="field">
@@ -340,8 +391,8 @@
     </div>
 
     <div class="field">
-      <label for="ghiChu">Ghi chú</label>
-      <textarea id="ghiChu" placeholder="Mô tả tình trạng, lỗi gặp phải hoặc yêu cầu đặc biệt..."></textarea>
+      <label for="ghiChu">Ghi chú<span class="required-mark">*</span></label>
+      <textarea id="ghiChu" placeholder="Mô tả tình trạng, lỗi gặp phải hoặc yêu cầu đặc biệt...&#10;Số lượng linh kiện sửa (nếu có)" required></textarea>
     </div>
 
     <div class="form-actions">
@@ -426,8 +477,12 @@ const DEFAULT_CONFIG = {
 const LS_SCRIPT_URL = "solarE_scriptUrl";
 const LS_CONFIG_CACHE = "solarE_configCache";
 
+/* Link Google Apps Script mặc định — dùng chung cho mọi người mở web app.
+   Nếu sau này cần đổi link, vào Admin > nhập link mới > "Lưu Script & Test kết nối". */
+const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxubA1f3DJ7fdVvljfww-aTC7nKUuFQVc4XOl6zYZqbjrIEbTALSwa6tW19uMpilX7-Vg/exec";
+
 let state = {
-  scriptUrl: localStorage.getItem(LS_SCRIPT_URL) || "",
+  scriptUrl: localStorage.getItem(LS_SCRIPT_URL) || DEFAULT_SCRIPT_URL,
   config: loadCachedConfig(),
   vatTuSelections: [""],
   editingLoaiMay: null
@@ -532,6 +587,94 @@ function renderVatTuRows(){
   });
 }
 
+/* ---------------- Định dạng ngày dd/mm/yyyy (3 ô riêng) ---------------- */
+function todayDDMMYYYY(){
+  const d = new Date();
+  return {
+    dd: String(d.getDate()).padStart(2,'0'),
+    mm: String(d.getMonth()+1).padStart(2,'0'),
+    yyyy: String(d.getFullYear())
+  };
+}
+function getNgayValue(){
+  const dd = document.getElementById('ngayDD').value.trim();
+  const mm = document.getElementById('ngayMM').value.trim();
+  const yyyy = document.getElementById('ngayYYYY').value.trim();
+  return { dd, mm, yyyy, str: `${dd}/${mm}/${yyyy}` };
+}
+function setNgayValue(dd, mm, yyyy){
+  document.getElementById('ngayDD').value = dd;
+  document.getElementById('ngayMM').value = mm;
+  document.getElementById('ngayYYYY').value = yyyy;
+}
+function isValidDDMMYYYY(str){
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(str);
+  if(!m) return false;
+  const dd = parseInt(m[1],10), mm = parseInt(m[2],10), yyyy = parseInt(m[3],10);
+  if(mm < 1 || mm > 12) return false;
+  const daysInMonth = new Date(yyyy, mm, 0).getDate();
+  if(dd < 1 || dd > daysInMonth) return false;
+
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const inputDate = new Date(yyyy, mm-1, dd);
+  if(yyyy > now.getFullYear()) return false;   // năm không được vượt năm hiện tại
+  if(inputDate.getTime() > todayStart.getTime()) return false; // ngày không được ở tương lai
+
+  return true;
+}
+(function setupNgayInput(){
+  const ddEl = document.getElementById('ngayDD');
+  const mmEl = document.getElementById('ngayMM');
+  const yyyyEl = document.getElementById('ngayYYYY');
+  const warnEl = document.getElementById('ngayWarning');
+
+  function onlyDigits(el, maxLen){
+    el.value = el.value.replace(/\D/g,'').slice(0, maxLen);
+  }
+
+  ddEl.addEventListener('input', ()=>{
+    onlyDigits(ddEl, 2);
+    if(ddEl.value.length === 2) mmEl.focus();
+    checkWarning();
+  });
+  mmEl.addEventListener('input', ()=>{
+    onlyDigits(mmEl, 2);
+    if(mmEl.value.length === 2) yyyyEl.focus();
+    checkWarning();
+  });
+  yyyyEl.addEventListener('input', ()=>{
+    onlyDigits(yyyyEl, 4);
+    checkWarning();
+  });
+
+  // Backspace ở đầu ô trống -> lùi về ô trước, không xóa ô khác
+  mmEl.addEventListener('keydown', (e)=>{
+    if(e.key === 'Backspace' && mmEl.value === '') ddEl.focus();
+  });
+  yyyyEl.addEventListener('keydown', (e)=>{
+    if(e.key === 'Backspace' && yyyyEl.value === '') mmEl.focus();
+  });
+
+  function checkWarning(){
+    warnEl.style.display = 'none';
+    warnEl.textContent = '';
+    const dd = ddEl.value, mm = mmEl.value, yyyy = yyyyEl.value;
+    if(dd.length === 2 && mm.length === 2 && yyyy.length === 4){
+      const ddN = parseInt(dd,10), mmN = parseInt(mm,10), yyyyN = parseInt(yyyy,10);
+      const currentYear = new Date().getFullYear();
+      const warnings = [];
+      if(ddN > 31) warnings.push('Ngày phải ≤ 31');
+      if(mmN > 12) warnings.push('Tháng phải ≤ 12');
+      if(yyyyN > currentYear) warnings.push('Năm phải ≤ ' + currentYear);
+      if(warnings.length){
+        warnEl.textContent = '⚠ ' + warnings.join(', ');
+        warnEl.style.display = 'block';
+      }
+    }
+  }
+})();
+
 document.getElementById('btnAddVatTuRow').addEventListener('click', ()=>{
   state.vatTuSelections.push('');
   renderVatTuRows();
@@ -539,7 +682,9 @@ document.getElementById('btnAddVatTuRow').addEventListener('click', ()=>{
 
 /* ---------------- Reset form (Làm mới) ---------------- */
 document.getElementById('btnReset').addEventListener('click', ()=>{
-  document.getElementById('ngay').valueAsDate = new Date();
+  const t = todayDDMMYYYY();
+  setNgayValue(t.dd, t.mm, t.yyyy);
+  document.getElementById('ngayWarning').style.display = 'none';
   document.getElementById('soSuaChua').value = '';
   document.getElementById('snMay').value = '';
   document.getElementById('ghiChu').value = '';
@@ -550,6 +695,12 @@ document.getElementById('btnReset').addEventListener('click', ()=>{
 /* ---------------- Submit form ---------------- */
 document.getElementById('repairForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
+
+  const ngayValue = getNgayValue().str;
+  if(!isValidDDMMYYYY(ngayValue)){
+    showToast('Vui lòng nhập Ngày hợp lệ (dd/mm/yyyy), không vượt quá ngày hiện tại.', 'error');
+    return;
+  }
 
   const vatTuValues = state.vatTuSelections.filter(v=>v);
   if(vatTuValues.length === 0){
@@ -564,7 +715,7 @@ document.getElementById('repairForm').addEventListener('submit', async (e)=>{
   const payload = {
     action: 'submitForm',
     form: {
-      ngay: document.getElementById('ngay').value,
+      ngay: ngayValue,
       soSuaChua: document.getElementById('soSuaChua').value,
       loaiMay: document.getElementById('loaiMaySelect').value,
       model: document.getElementById('modelSelect').value,
@@ -899,7 +1050,8 @@ async function loadConfigFromServer(silent){
 
 /* ---------------- Init ---------------- */
 (function init(){
-  document.getElementById('ngay').valueAsDate = new Date();
+  const t0 = todayDDMMYYYY();
+  setNgayValue(t0.dd, t0.mm, t0.yyyy);
   renderLoaiMaySelect();       // hiển thị ngay từ cache để không phải chờ mạng
   if(state.scriptUrl) loadConfigFromServer(true); // sau đó âm thầm cập nhật bản mới nhất từ Google Sheet
 })();
