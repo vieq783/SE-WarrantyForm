@@ -329,6 +329,11 @@
     </div>
 
     <div class="field">
+      <label for="snMay">SN máy</label>
+      <input type="text" id="snMay" placeholder="VD: SN-20260621-001">
+    </div>
+
+    <div class="field">
       <label>Vật tư / Thiết bị sửa chữa<span class="required-mark">*</span></label>
       <div id="vatTuRows"></div>
       <button type="button" id="btnAddVatTuRow" class="btn-dashed">+ Thêm vật tư</button>
@@ -395,9 +400,9 @@
 
     <div class="admin-actions">
       <button class="btn-ghost" id="btnCloseAdmin">Đóng</button>
-      <button class="btn-primary" id="btnSaveConfig" style="flex:2;">Lưu cấu hình cho form</button>
+      <button class="btn-primary" id="btnSaveConfig" style="flex:2;">Lưu &amp; đồng bộ cấu hình</button>
     </div>
-    <p class="note">Nút trên chỉ lưu cấu hình Loại máy / Model / Vật tư cho form trên <strong>thiết bị này</strong> để dùng và kiểm tra ngay — chưa gửi/đồng bộ lên Google Sheet.</p>
+    <p class="note">Nút trên lưu cấu hình Loại máy / Model / Vật tư cho thiết bị này, đồng thời đẩy lên Google Sheet (nếu đã kết nối ở phần trên) để <strong>các máy khác mở form sẽ tự tải bản mới nhất</strong>.</p>
   </section>
 
   <footer class="app-footer">Solar E © 2026 – Phiếu sửa chữa / bảo hành</footer>
@@ -536,6 +541,7 @@ document.getElementById('btnAddVatTuRow').addEventListener('click', ()=>{
 document.getElementById('btnReset').addEventListener('click', ()=>{
   document.getElementById('ngay').valueAsDate = new Date();
   document.getElementById('soSuaChua').value = '';
+  document.getElementById('snMay').value = '';
   document.getElementById('ghiChu').value = '';
   document.getElementById('loaiMaySelect').selectedIndex = 0;
   applyLoaiMayDependent();
@@ -562,6 +568,7 @@ document.getElementById('repairForm').addEventListener('submit', async (e)=>{
       soSuaChua: document.getElementById('soSuaChua').value,
       loaiMay: document.getElementById('loaiMaySelect').value,
       model: document.getElementById('modelSelect').value,
+      snMay: document.getElementById('snMay').value,
       vatTu: vatTuValues.join('\n'),
       ghiChu: document.getElementById('ghiChu').value
     }
@@ -580,6 +587,7 @@ document.getElementById('repairForm').addEventListener('submit', async (e)=>{
     if(data.success){
       showToast('Đã gửi phiếu thành công!', 'success');
       document.getElementById('soSuaChua').value = '';
+      document.getElementById('snMay').value = '';
       document.getElementById('ghiChu').value = '';
       state.vatTuSelections = [''];
       renderVatTuRows();
@@ -647,7 +655,14 @@ document.getElementById('btnSaveAndTest').addEventListener('click', async ()=>{
       return;
     }
     if(data && data.loaiMay){
-      statusEl.textContent = `✓ Đã lưu link & kết nối thành công! (Google Sheet hiện có ${data.loaiMay.length} loại máy)`;
+      state.config = data;
+      cacheConfig(data);
+      renderLoaiMaySelect();
+      renderAdminLoaiMayList();
+      renderEditLoaiMaySelect();
+      renderModelList();
+      renderVatTuAdminList();
+      statusEl.textContent = `✓ Đã lưu link & kết nối thành công! (Đã tải ${data.loaiMay.length} loại máy từ Google Sheet)`;
       showToast('Kết nối Google Sheet thành công!', 'success');
     } else if(data && data.error){
       statusEl.textContent = '✗ Đã lưu link, nhưng script trả lỗi: ' + data.error;
@@ -830,17 +845,63 @@ document.getElementById('btnAddVatTuItem').addEventListener('click', ()=>{
   renderVatTuAdminList();
 });
 
-/* ---- Lưu cấu hình cho form (CHỈ local — không gọi Google Sheet) ---- */
-document.getElementById('btnSaveConfig').addEventListener('click', ()=>{
+/* ---- Lưu cấu hình cho form + đồng bộ lên Google Sheet ---- */
+document.getElementById('btnSaveConfig').addEventListener('click', async ()=>{
   cacheConfig(state.config);
   renderLoaiMaySelect();
-  showToast('Đã lưu cấu hình cho form trên thiết bị này.', 'success');
+
+  if(!state.scriptUrl){
+    showToast('Đã lưu trên máy này. Chưa kết nối Google Sheet nên máy khác sẽ KHÔNG thấy cấu hình này.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btnSaveConfig');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Đang đồng bộ lên Google Sheet...';
+  try{
+    const res = await fetch(state.scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'saveConfig', config: state.config })
+    });
+    const data = await res.json();
+    if(data.success){
+      showToast('Đã lưu & đồng bộ cấu hình lên Google Sheet cho mọi máy!', 'success');
+    } else {
+      showToast('Đã lưu trên máy này, nhưng đồng bộ lên Sheet thất bại: ' + (data.error || ''), 'error');
+    }
+  }catch(err){
+    showToast('Đã lưu trên máy này, nhưng không đồng bộ được lên Google Sheet (lỗi mạng/link).', 'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
 });
+
+/* ---- Tự tải cấu hình mới nhất từ Google Sheet (chạy âm thầm khi mở form) ---- */
+async function loadConfigFromServer(silent){
+  if(!state.scriptUrl) return;
+  try{
+    const sep = state.scriptUrl.includes('?') ? '&' : '?';
+    const res = await fetch(state.scriptUrl + sep + 'action=getConfig');
+    const data = await res.json();
+    if(data && data.loaiMay){
+      state.config = data;
+      cacheConfig(data);
+      renderLoaiMaySelect();
+    }
+  }catch(err){
+    // Không kết nối được -> dùng tạm cấu hình đã lưu (cache) trên máy, không báo lỗi để không làm phiền người dùng cuối.
+    if(!silent) showToast('Không tải được cấu hình mới nhất, đang dùng bản lưu trên máy.', 'error');
+  }
+}
 
 /* ---------------- Init ---------------- */
 (function init(){
   document.getElementById('ngay').valueAsDate = new Date();
-  renderLoaiMaySelect();
+  renderLoaiMaySelect();       // hiển thị ngay từ cache để không phải chờ mạng
+  if(state.scriptUrl) loadConfigFromServer(true); // sau đó âm thầm cập nhật bản mới nhất từ Google Sheet
 })();
 </script>
 </body>
