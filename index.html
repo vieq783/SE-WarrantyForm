@@ -1,498 +1,836 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Solar E – Phiếu Sửa Chữa / Bảo Hành</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f4f6f9;
-      color: #1a1a1a;
-      min-height: 100vh;
-      padding: 2rem 1rem;
-    }
-
-    .page-wrap {
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      overflow: hidden;
-    }
-
-    .card-header {
-      background: #1a6fc4;
-      padding: 1.25rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .logo {
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 6px 14px;
-      border-radius: 8px;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-
-    .header-text h1 {
-      color: #fff;
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    .header-text p {
-      color: rgba(255,255,255,0.75);
-      font-size: 13px;
-      margin-top: 2px;
-    }
-
-    .card-body {
-      padding: 1.5rem;
-    }
-
-    .setup-banner {
-      background: #fff8e6;
-      border: 1px solid #f5c04b;
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin-bottom: 1.25rem;
-      font-size: 13px;
-      color: #7a5200;
-    }
-
-    .setup-banner strong { display: block; margin-bottom: 6px; }
-
-    .url-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .url-row input {
-      flex: 1;
-      font-size: 13px;
-      padding: 7px 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      outline: none;
-    }
-
-    .url-row input:focus { border-color: #1a6fc4; }
-
-    .btn-save {
-      background: #1a6fc4;
-      color: #fff;
-      border: none;
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group.full { grid-column: 1 / -1; }
-
-    label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #555;
-    }
-
-    label .req { color: #e24b4a; margin-left: 2px; }
-
-    input[type="date"],
-    input[type="text"],
-    select,
-    textarea {
-      font-family: inherit;
-      font-size: 14px;
-      padding: 9px 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fff;
-      color: #1a1a1a;
-      outline: none;
-      transition: border-color 0.15s;
-      width: 100%;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: #1a6fc4;
-      box-shadow: 0 0 0 3px rgba(26,111,196,0.1);
-    }
-
-    textarea { resize: vertical; min-height: 90px; }
-
-    .vat-tu-list { display: flex; flex-direction: column; gap: 8px; }
-
-    .vt-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .vt-row select { flex: 1; }
-
-    .sep {
-      font-size: 14px;
-      color: #aaa;
-      user-select: none;
-    }
-
-    .btn-remove {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #bbb;
-      font-size: 20px;
-      line-height: 1;
-      padding: 0 2px;
-      transition: color 0.15s;
-    }
-
-    .btn-remove:hover { color: #e24b4a; }
-
-    .btn-add {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 6px;
-      padding: 7px 14px;
-      font-size: 13px;
-      color: #1a6fc4;
-      background: none;
-      border: 1px dashed #1a6fc4;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s;
-    }
-
-    .btn-add:hover { background: #e8f2fd; }
-
-    .divider {
-      border: none;
-      border-top: 1px solid #f0f0f0;
-      margin: 1.25rem 0;
-    }
-
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .btn-reset {
-      background: none;
-      border: 1px solid #ddd;
-      padding: 9px 22px;
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      font-family: inherit;
-      color: #666;
-      transition: background 0.15s;
-    }
-
-    .btn-reset:hover { background: #f5f5f5; }
-
-    .btn-submit {
-      background: #1a6fc4;
-      color: #fff;
-      border: none;
-      padding: 9px 26px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s;
-    }
-
-    .btn-submit:hover { background: #155da0; }
-    .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
-
-    .toast {
-      display: none;
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1d9e75;
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-      z-index: 999;
-      white-space: nowrap;
-    }
-
-    .toast.error { background: #e24b4a; }
-
-    .card-footer {
-      padding: 10px 1.5rem;
-      background: #f9f9f9;
-      border-top: 1px solid #f0f0f0;
-      font-size: 12px;
-      color: #aaa;
-      text-align: center;
-    }
-
-    @media (max-width: 480px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .form-group.full { grid-column: 1; }
-      .card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar E - Phiếu Sửa chữa/Bảo hành</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F2EA;
+    --surface:#FFFFFF;
+    --ink:#1B3A4B;
+    --ink-soft:#5B7686;
+    --accent:#E8A33D;
+    --accent-dark:#C8842A;
+    --accent-soft:#FBE8C8;
+    --line:#E6DECC;
+    --success:#3F9C6D;
+    --success-soft:#E1F3EA;
+    --danger:#D6584A;
+    --danger-soft:#FBE5E1;
+    --radius:14px;
+    --shadow:0 4px 18px rgba(27,58,75,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  .topbar{
+    height:6px;
+    background:linear-gradient(90deg,var(--accent-dark),var(--accent) 50%,#F6CE8C);
+  }
+  .hero{
+    text-align:center;
+    padding:32px 20px 22px;
+  }
+  .sun-badge{
+    width:52px;height:52px;margin:0 auto 10px;
+  }
+  .hero h1{
+    font-family:'Manrope',sans-serif;
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:0.3px;
+    margin:0;
+    color:var(--ink);
+  }
+  .hero p{
+    margin:4px 0 0;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    font-weight:600;
+    letter-spacing:0.4px;
+  }
+  .container{
+    max-width:560px;
+    margin:0 auto;
+    padding:0 16px;
+  }
+  .card{
+    background:var(--surface);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    padding:24px 22px;
+    margin-bottom:18px;
+  }
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:7px;
+  }
+  input[type=text], input[type=date], select, textarea{
+    width:100%;
+    padding:11px 13px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:#FFFCF8;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea{resize:vertical;min-height:70px;}
+  .row-inline{display:flex; gap:8px;}
+  .row-inline select{flex:1;}
+  .btn-primary, .btn-secondary, .btn-danger, .btn-ghost{
+    border:none;
+    border-radius:10px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    padding:11px 18px;
+    transition:transform .08s, opacity .15s;
+  }
+  .btn-primary{
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    padding:13px 18px;
+    font-size:15.5px;
+    box-shadow:0 3px 10px rgba(232,163,61,0.35);
+  }
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-primary:active{transform:scale(0.99);}
+  .btn-secondary{
+    background:var(--ink);
+    color:#fff;
+    white-space:nowrap;
+  }
+  .btn-secondary:hover{background:#274d63;}
+  .btn-danger{background:var(--danger); color:#fff;}
+  .btn-danger:hover{opacity:0.85;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink-soft);
+    border:1.5px solid var(--line);
+  }
+  .btn-ghost:hover{border-color:var(--ink-soft);}
+  .tag-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
+  }
+  .tag{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--accent-soft);
+    color:var(--accent-dark);
+    border-radius:20px;
+    padding:6px 6px 6px 13px;
+    font-size:13.5px;
+    font-weight:600;
+  }
+  .tag button{
+    border:none;
+    background:rgba(0,0,0,0.08);
+    color:var(--accent-dark);
+    width:20px;height:20px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:13px;
+    line-height:1;
+    font-weight:700;
+  }
+  .admin-link{
+    display:block;
+    margin:6px auto 24px;
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-size:12.5px;
+    font-weight:600;
+    text-decoration:underline;
+    cursor:pointer;
+    text-align:center;
+    width:100%;
+  }
+  .hidden{display:none !important;}
+  .admin-panel h2{
+    font-family:'Manrope',sans-serif;
+    font-size:17px;
+    margin:0 0 4px;
+  }
+  .admin-panel .sub{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+  }
+  .admin-section{
+    border-top:1.5px solid var(--line);
+    padding-top:16px;
+    margin-top:16px;
+  }
+  .admin-section:first-of-type{border-top:none; margin-top:0; padding-top:0;}
+  .admin-section h3{
+    font-size:13.5px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:var(--accent-dark);
+    margin:0 0 10px;
+  }
+  .list-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .list-row input{flex:1;}
+  .list-row .btn-danger{padding:9px 12px; font-size:13px;}
+  .add-row{display:flex; gap:8px; margin-top:10px;}
+  .add-row input{flex:1;}
+  .add-row button{padding:11px 16px; font-size:13.5px;}
+  .pill-select{margin-bottom:6px;}
+  .admin-actions{
+    display:flex;
+    gap:10px;
+    margin-top:22px;
+  }
+  .admin-actions button{flex:1;}
+  .note{
+    font-size:12px;
+    color:var(--ink-soft);
+    background:var(--bg);
+    border-radius:8px;
+    padding:10px 12px;
+    margin-top:4px;
+    line-height:1.5;
+  }
+  .toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--ink);
+    color:#fff;
+    padding:13px 22px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    box-shadow:0 6px 20px rgba(0,0,0,0.2);
+    z-index:999;
+    max-width:90%;
+    text-align:center;
+  }
+  .toast.success{background:var(--success);}
+  .toast.error{background:var(--danger);}
+  .empty-msg{font-size:13px; color:var(--ink-soft); font-style:italic; margin:4px 0 8px;}
+  @media (max-width:420px){
+    .hero h1{font-size:22px;}
+    .card{padding:20px 16px;}
+  }
+</style>
 </head>
 <body>
-<div class="page-wrap">
-  <div class="card">
-    <div class="card-header">
-      <div class="logo">Solar E</div>
-      <div class="header-text">
-        <h1>Phiếu Sửa Chữa / Bảo Hành</h1>
-        <p>Điền đầy đủ thông tin trước khi gửi</p>
+
+<div class="topbar"></div>
+<header class="hero">
+  <svg class="sun-badge" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="22" fill="#E8A33D"/>
+    <g stroke="#C8842A" stroke-width="5" stroke-linecap="round">
+      <line x1="50" y1="6" x2="50" y2="18"/>
+      <line x1="50" y1="82" x2="50" y2="94"/>
+      <line x1="6" y1="50" x2="18" y2="50"/>
+      <line x1="82" y1="50" x2="94" y2="50"/>
+      <line x1="18" y1="18" x2="26" y2="26"/>
+      <line x1="74" y1="74" x2="82" y2="82"/>
+      <line x1="82" y1="18" x2="74" y2="26"/>
+      <line x1="26" y1="74" x2="18" y2="82"/>
+    </g>
+  </svg>
+  <h1>Solar E</h1>
+  <p>PHIẾU SỬA CHỮA / BẢO HÀNH</p>
+</header>
+
+<main class="container">
+
+  <form id="repairForm" class="card">
+    <div class="field">
+      <label for="ngay">Ngày</label>
+      <input type="date" id="ngay" required>
+    </div>
+    <div class="field">
+      <label for="soSuaChua">Số sửa chữa</label>
+      <input type="text" id="soSuaChua" placeholder="VD: SC-0001" required>
+    </div>
+    <div class="field">
+      <label for="loaiMaySelect">Loại máy</label>
+      <select id="loaiMaySelect" required></select>
+    </div>
+    <div class="field">
+      <label for="modelSelect">Model máy</label>
+      <select id="modelSelect" required></select>
+    </div>
+    <div class="field">
+      <label for="vatTuSelect">Vật tư / thiết bị sửa chữa</label>
+      <div class="row-inline">
+        <select id="vatTuSelect"></select>
+        <button type="button" class="btn-secondary" id="btnAddVatTu">Thêm</button>
+      </div>
+      <div class="tag-list" id="vatTuTags"></div>
+    </div>
+    <div class="field">
+      <label for="ghiChu">Ghi chú</label>
+      <textarea id="ghiChu" placeholder="Ghi chú thêm..."></textarea>
+    </div>
+    <button type="submit" class="btn-primary">Gửi phiếu</button>
+  </form>
+
+  <button class="admin-link" id="adminToggle">⚙ Quản trị (Admin)</button>
+
+  <section class="card admin-panel hidden" id="adminPanel">
+    <h2>Trang quản trị</h2>
+    <p class="sub">Cấu hình kết nối Google Sheet và danh mục Loại máy / Model / Vật tư.</p>
+
+    <div class="admin-section">
+      <h3>Kết nối Google Sheet</h3>
+      <div class="field">
+        <label for="scriptUrlInput">Link Google Apps Script (Web App URL)</label>
+        <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+      <div class="row-inline">
+        <button class="btn-ghost" id="btnSaveScriptUrl" style="flex:1;">💾 Lưu</button>
+        <button class="btn-secondary" id="btnTestConnection" style="flex:1;">🔌 Kết nối & Test</button>
+      </div>
+      <p class="note" id="connectionStatus">Chưa kết nối.</p>
+      <p class="note">"Lưu" chỉ lưu link vào trình duyệt này. "Kết nối &amp; Test" sẽ gọi thử tới Google Sheet để kiểm tra và tải dữ liệu hiện có về (sẽ ghi đè các chỉnh sửa Loại máy/Model/Vật tư chưa lưu ở dưới).</p>
+    </div>
+
+    <div class="admin-section">
+      <h3>Loại máy</h3>
+      <div id="loaiMayList"></div>
+      <div class="add-row">
+        <input type="text" id="newLoaiMayInput" placeholder="Tên loại máy mới">
+        <button class="btn-secondary" id="btnAddLoaiMay">+ Thêm</button>
       </div>
     </div>
 
-    <div class="card-body">
+    <div class="admin-section">
+      <h3>Chọn loại máy để chỉnh sửa Model & Vật tư</h3>
+      <select id="editLoaiMaySelect" class="pill-select"></select>
+    </div>
 
-      <!-- Setup banner: ẩn đi sau khi đã nhập URL -->
-      <div class="setup-banner" id="setupBanner">
-        <strong>⚙️ Thiết lập lần đầu (dành cho quản trị viên)</strong>
-        Dán URL Google Apps Script để kích hoạt ghi dữ liệu vào Google Sheets.
-        <div class="url-row">
-          <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" />
-          <button class="btn-save" onclick="saveUrl()">Lưu</button>
-        </div>
-      </div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="ngay">Ngày <span class="req">*</span></label>
-          <input type="date" id="ngay" />
-        </div>
-
-        <div class="form-group">
-          <label for="soSC">Số sửa chữa <span class="req">*</span></label>
-          <input type="text" id="soSC" placeholder="VD: SC-2024-001" />
-        </div>
-
-        <div class="form-group full">
-          <label for="model">Model máy <span class="req">*</span></label>
-          <select id="model">
-            <option value="">-- Chọn model máy --</option>
-            <option>Solar Inverter SL-1K</option>
-            <option>Solar Inverter SL-3K</option>
-            <option>Solar Inverter SL-5K</option>
-            <option>Solar Inverter SL-10K</option>
-            <option>Solar Battery Pack SB-48V</option>
-            <option>Solar Battery Pack SB-72V</option>
-            <option>Solar Controller SC-30A</option>
-            <option>Solar Controller SC-60A</option>
-            <option>Solar Panel 400W Mono</option>
-            <option>Solar Panel 550W Mono</option>
-            <option>Hybrid Inverter HY-5K</option>
-            <option>Hybrid Inverter HY-10K</option>
-          </select>
-        </div>
-
-        <div class="form-group full">
-          <label>Vật tư / Thiết bị sửa chữa <span class="req">*</span></label>
-          <div class="vat-tu-list" id="vatTuList">
-            <div class="vt-row">
-              <select class="vt-select">
-                <option value="">-- Chọn vật tư --</option>
-                <option>Tụ điện 450V 1000uF</option>
-                <option>IGBT Module 150A</option>
-                <option>Biến áp xung 5W</option>
-                <option>Bo mạch điều khiển</option>
-                <option>Quạt tản nhiệt 12V</option>
-                <option>Cầu chì 63A</option>
-                <option>Relay 24V 10A</option>
-                <option>Màn hình LCD 2.8"</option>
-                <option>Dây cáp DC 10AWG</option>
-                <option>Connector MC4</option>
-                <option>Ắc quy 12V 100Ah</option>
-                <option>Modul Wifi/BLE</option>
-                <option>Vỏ nhựa thay thế</option>
-                <option>Bảng mạch MPPT</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn-add" onclick="addVatTu()">+ Thêm vật tư</button>
-        </div>
-
-        <div class="form-group full">
-          <label for="ghiChu">Ghi chú</label>
-          <textarea id="ghiChu" placeholder="Mô tả tình trạng, lỗi gặp phải hoặc yêu cầu đặc biệt..."></textarea>
-        </div>
-      </div>
-
-      <hr class="divider" />
-
-      <div class="form-actions">
-        <button class="btn-reset" onclick="resetForm()">Làm mới</button>
-        <button class="btn-submit" id="submitBtn" onclick="submitForm()">Gửi phiếu →</button>
+    <div class="admin-section">
+      <h3>Model máy <span id="editingForModel"></span></h3>
+      <div id="modelList"></div>
+      <div class="add-row">
+        <input type="text" id="newModelInput" placeholder="Tên model mới">
+        <button class="btn-secondary" id="btnAddModel">+ Thêm</button>
       </div>
     </div>
 
-    <div class="card-footer">Solar E &copy; 2024 – Phiếu sửa chữa / bảo hành</div>
-  </div>
-</div>
+    <div class="admin-section">
+      <h3>Vật tư / thiết bị <span id="editingForVatTu"></span></h3>
+      <div id="vatTuAdminList"></div>
+      <div class="add-row">
+        <input type="text" id="newVatTuInput" placeholder="Tên vật tư mới">
+        <button class="btn-secondary" id="btnAddVatTuItem">+ Thêm</button>
+      </div>
+    </div>
 
-<div class="toast" id="toast"></div>
+    <div class="admin-actions">
+      <button class="btn-ghost" id="btnCloseAdmin">Đóng</button>
+      <button class="btn-primary" id="btnSaveConfig" style="flex:2;">Lưu cấu hình lên Google Sheet</button>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast hidden" id="toast"></div>
 
 <script>
-  const STORAGE_KEY = 'solarE_scriptUrl';
-  let scriptUrl = localStorage.getItem(STORAGE_KEY) || '';
+/* =========================================================
+   CẤU HÌNH CHUNG — đổi mật khẩu admin tại đây trước khi deploy
+   ========================================================= */
+const ADMIN_PASSWORD = "solar2026";
 
-  // Khởi tạo
-  (function init() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('ngay').value = today;
-    if (scriptUrl) {
-      document.getElementById('scriptUrl').value = scriptUrl;
-      document.getElementById('setupBanner').style.display = 'none';
-    }
-  })();
+const DEFAULT_CONFIG = {
+  loaiMay: ["Sunways", "Lumentree", "Yongkai", "EBOX"],
+  models: { "Sunways": [], "Lumentree": [], "Yongkai": [], "EBOX": [] },
+  vatTu:  { "Sunways": [], "Lumentree": [], "Yongkai": [], "EBOX": [] }
+};
 
-  // Lưu URL Script
-  function saveUrl() {
-    const val = document.getElementById('scriptUrl').value.trim();
-    if (!val.startsWith('https://script.google.com')) {
-      showToast('URL không hợp lệ. Hãy dán đúng URL từ Apps Script.', true);
-      return;
-    }
-    scriptUrl = val;
-    localStorage.setItem(STORAGE_KEY, val);
-    document.getElementById('setupBanner').style.display = 'none';
-    showToast('Đã lưu URL thành công!');
+const LS_SCRIPT_URL = "solarE_scriptUrl";
+const LS_CONFIG_CACHE = "solarE_configCache";
+
+let state = {
+  scriptUrl: localStorage.getItem(LS_SCRIPT_URL) || "",
+  config: loadCachedConfig(),
+  selectedVatTu: [],
+  editingLoaiMay: null
+};
+
+function loadCachedConfig(){
+  try{
+    const raw = localStorage.getItem(LS_CONFIG_CACHE);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+}
+function cacheConfig(cfg){
+  localStorage.setItem(LS_CONFIG_CACHE, JSON.stringify(cfg));
+}
+
+/* ---------------- Toast ---------------- */
+let toastTimer = null;
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.add('hidden'), 3200);
+}
+
+/* ---------------- Form: render selects ---------------- */
+function renderLoaiMaySelect(){
+  const sel = document.getElementById('loaiMaySelect');
+  sel.innerHTML = '';
+  state.config.loaiMay.forEach(name=>{
+    const opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    sel.appendChild(opt);
+  });
+  onLoaiMayChange();
+}
+
+function onLoaiMayChange(){
+  const loaiMay = document.getElementById('loaiMaySelect').value;
+  const modelSel = document.getElementById('modelSelect');
+  const vatTuSel = document.getElementById('vatTuSelect');
+  modelSel.innerHTML = '';
+  vatTuSel.innerHTML = '';
+
+  const models = (state.config.models[loaiMay] || []);
+  if(models.length === 0){
+    modelSel.appendChild(new Option('-- Chưa có model --',''));
+  }else{
+    modelSel.appendChild(new Option('-- Chọn model --',''));
+    models.forEach(m=> modelSel.appendChild(new Option(m,m)));
   }
 
-  // Danh sách vật tư options (dùng chung)
-  const vatTuOptions = [
-    'Tụ điện 450V 1000uF', 'IGBT Module 150A', 'Biến áp xung 5W',
-    'Bo mạch điều khiển', 'Quạt tản nhiệt 12V', 'Cầu chì 63A',
-    'Relay 24V 10A', 'Màn hình LCD 2.8"', 'Dây cáp DC 10AWG',
-    'Connector MC4', 'Ắc quy 12V 100Ah', 'Modul Wifi/BLE',
-    'Vỏ nhựa thay thế', 'Bảng mạch MPPT'
-  ];
-
-  function buildSelect() {
-    const opts = vatTuOptions.map(o => `<option>${o}</option>`).join('');
-    return `<select class="vt-select"><option value="">-- Chọn vật tư --</option>${opts}</select>`;
+  const parts = (state.config.vatTu[loaiMay] || []);
+  if(parts.length === 0){
+    vatTuSel.appendChild(new Option('-- Chưa có vật tư --',''));
+  }else{
+    vatTuSel.appendChild(new Option('-- Chọn vật tư --',''));
+    parts.forEach(p=> vatTuSel.appendChild(new Option(p,p)));
   }
 
-  // Thêm dòng vật tư
-  function addVatTu() {
-    const list = document.getElementById('vatTuList');
-    const row = document.createElement('div');
-    row.className = 'vt-row';
-    row.innerHTML = `<span class="sep">—</span>${buildSelect()}<button class="btn-remove" onclick="this.parentElement.remove()" title="Xóa">×</button>`;
-    list.appendChild(row);
-  }
+  state.selectedVatTu = [];
+  renderVatTuTags();
+}
+document.getElementById('loaiMaySelect').addEventListener('change', onLoaiMayChange);
 
-  // Lấy danh sách vật tư đã chọn
-  function getVatTu() {
-    return Array.from(document.querySelectorAll('.vt-select'))
-      .map(s => s.value).filter(Boolean).join(' — ');
-  }
-
-  // Toast thông báo
-  function showToast(msg, isError) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast' + (isError ? ' error' : '');
-    t.style.display = 'block';
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
-  }
-
-  // Làm mới form
-  function resetForm() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('ngay').value = today;
-    document.getElementById('soSC').value = '';
-    document.getElementById('model').value = '';
-    document.getElementById('ghiChu').value = '';
-    document.getElementById('vatTuList').innerHTML = `<div class="vt-row">${buildSelect()}</div>`;
-  }
-
-  // Gửi form
-  async function submitForm() {
-    const ngay   = document.getElementById('ngay').value;
-    const soSC   = document.getElementById('soSC').value.trim();
-    const model  = document.getElementById('model').value;
-    const vatTu  = getVatTu();
-    const ghiChu = document.getElementById('ghiChu').value.trim();
-
-    if (!ngay || !soSC || !model || !vatTu) {
-      showToast('Vui lòng điền đầy đủ các trường bắt buộc (*)', true);
-      return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Đang gửi...';
-
-    const payload = {
-      thoiGian: new Date().toLocaleString('vi-VN'),
-      ngay, soSC, model, vatTu, ghiChu
+/* ---------------- Vật tư tag list (form) ---------------- */
+function renderVatTuTags(){
+  const wrap = document.getElementById('vatTuTags');
+  wrap.innerHTML = '';
+  state.selectedVatTu.forEach(name=>{
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.innerHTML = `<span>${escapeHtml(name)}</span>`;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '×';
+    btn.onclick = ()=>{
+      state.selectedVatTu = state.selectedVatTu.filter(n=>n!==name);
+      renderVatTuTags();
     };
+    tag.appendChild(btn);
+    wrap.appendChild(tag);
+  });
+}
+document.getElementById('btnAddVatTu').addEventListener('click', ()=>{
+  const sel = document.getElementById('vatTuSelect');
+  const val = sel.value;
+  if(!val) return;
+  if(!state.selectedVatTu.includes(val)){
+    state.selectedVatTu.push(val);
+    renderVatTuTags();
+  }
+});
 
-    if (!scriptUrl) {
-      setTimeout(() => {
-        showToast('⚠️ Chưa cấu hình URL Script. Liên hệ quản trị viên.', true);
-        btn.disabled = false;
-        btn.textContent = 'Gửi phiếu →';
-      }, 400);
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------------- Submit form ---------------- */
+document.getElementById('repairForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  if(!state.scriptUrl){
+    showToast('Chưa cấu hình kết nối Google Sheet. Vui lòng liên hệ Admin.', 'error');
+    return;
+  }
+  const payload = {
+    action: 'submitForm',
+    form: {
+      ngay: document.getElementById('ngay').value,
+      soSuaChua: document.getElementById('soSuaChua').value,
+      loaiMay: document.getElementById('loaiMaySelect').value,
+      model: document.getElementById('modelSelect').value,
+      vatTu: state.selectedVatTu.join('\n'),
+      ghiChu: document.getElementById('ghiChu').value
+    }
+  };
+  const submitBtn = e.target.querySelector('.btn-primary');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Đang gửi...';
+  try{
+    const res = await fetch(state.scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(data.success){
+      showToast('Đã gửi phiếu thành công!', 'success');
+      document.getElementById('soSuaChua').value = '';
+      document.getElementById('ghiChu').value = '';
+      state.selectedVatTu = [];
+      renderVatTuTags();
+    } else {
+      showToast('Lỗi: ' + (data.error || 'Không gửi được dữ liệu.'), 'error');
+    }
+  }catch(err){
+    showToast('Không kết nối được Google Sheet. Kiểm tra mạng hoặc link Script.', 'error');
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Gửi phiếu';
+  }
+});
+
+/* ---------------- Load config from server ---------------- */
+async function loadConfigFromServer(silent){
+  if(!state.scriptUrl) return;
+  try{
+    const res = await fetch(state.scriptUrl + '?action=getConfig');
+    const data = await res.json();
+    if(data && data.loaiMay){
+      state.config = data;
+      cacheConfig(data);
+      renderLoaiMaySelect();
+      if(!document.getElementById('adminPanel').classList.contains('hidden')){
+        renderAdminLoaiMayList();
+      }
+      if(!silent) showToast('Đã kết nối Google Sheet thành công!', 'success');
+      document.getElementById('connectionStatus').textContent = '✓ Đã kết nối.';
+    }
+  }catch(err){
+    if(!silent) showToast('Không kết nối được Google Sheet. Kiểm tra lại link Script.', 'error');
+    document.getElementById('connectionStatus').textContent = 'Chưa kết nối được. Dùng dữ liệu lưu tạm trên máy.';
+  }
+}
+
+/* =========================================================
+   ADMIN
+   ========================================================= */
+document.getElementById('adminToggle').addEventListener('click', ()=>{
+  const pwd = prompt('Nhập mật khẩu Admin:');
+  if(pwd === null) return;
+  if(pwd !== ADMIN_PASSWORD){
+    showToast('Sai mật khẩu.', 'error');
+    return;
+  }
+  document.getElementById('adminPanel').classList.remove('hidden');
+  document.getElementById('scriptUrlInput').value = state.scriptUrl;
+  document.getElementById('connectionStatus').textContent = state.scriptUrl ? 'Đã có link đã lưu. Bấm "Kết nối & Test" để kiểm tra.' : 'Chưa có link nào được lưu.';
+  state.editingLoaiMay = state.config.loaiMay[0] || null;
+  renderAdminLoaiMayList();
+  renderEditLoaiMaySelect();
+  renderModelList();
+  renderVatTuAdminList();
+  document.getElementById('adminPanel').scrollIntoView({behavior:'smooth'});
+});
+
+document.getElementById('btnCloseAdmin').addEventListener('click', ()=>{
+  document.getElementById('adminPanel').classList.add('hidden');
+});
+
+document.getElementById('btnSaveScriptUrl').addEventListener('click', ()=>{
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  if(!url){ showToast('Vui lòng nhập link Script.', 'error'); return; }
+  state.scriptUrl = url;
+  localStorage.setItem(LS_SCRIPT_URL, url);
+  document.getElementById('connectionStatus').textContent = 'Đã lưu link (chưa kiểm tra kết nối — bấm "Kết nối & Test" để kiểm tra).';
+  showToast('Đã lưu link Script.', 'success');
+});
+
+document.getElementById('btnTestConnection').addEventListener('click', async ()=>{
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  if(!url){ showToast('Vui lòng nhập link Script.', 'error'); return; }
+  const statusEl = document.getElementById('connectionStatus');
+  const btn = document.getElementById('btnTestConnection');
+  btn.disabled = true;
+  statusEl.textContent = 'Đang kiểm tra kết nối...';
+  try{
+    const sep = url.includes('?') ? '&' : '?';
+    const res = await fetch(url + sep + 'action=getConfig');
+    const text = await res.text();
+    let data;
+    try{
+      data = JSON.parse(text);
+    }catch(parseErr){
+      statusEl.textContent = '✗ Phản hồi không phải JSON (có thể link sai, hoặc lúc Deploy chưa chọn "Anyone" trong "Who has access").';
+      showToast('Kết nối thất bại: phản hồi không hợp lệ.', 'error');
       return;
     }
-
-    try {
-      await fetch(scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      showToast('✓ Phiếu đã gửi thành công lên Google Sheets!');
-      resetForm();
-    } catch (err) {
-      showToast('Lỗi kết nối. Kiểm tra lại URL Script.', true);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Gửi phiếu →';
+    if(data && data.loaiMay){
+      state.config = data;
+      cacheConfig(data);
+      renderLoaiMaySelect();
+      renderAdminLoaiMayList();
+      renderEditLoaiMaySelect();
+      renderModelList();
+      renderVatTuAdminList();
+      statusEl.textContent = `✓ Kết nối thành công! Đã tải ${data.loaiMay.length} loại máy từ Google Sheet.`;
+      showToast('Kết nối Google Sheet thành công!', 'success');
+    } else if(data && data.error){
+      statusEl.textContent = '✗ Script trả về lỗi: ' + data.error;
+      showToast('Kết nối thất bại: ' + data.error, 'error');
+    } else {
+      statusEl.textContent = '✗ Phản hồi không đúng định dạng mong đợi.';
+      showToast('Kết nối thất bại.', 'error');
     }
+  }catch(err){
+    statusEl.textContent = '✗ Không gọi được tới link này (lỗi mạng, CORS, hoặc link sai).';
+    showToast('Không kết nối được Google Sheet.', 'error');
+  }finally{
+    btn.disabled = false;
   }
+});
+
+/* ---- Loại máy management ---- */
+function renderAdminLoaiMayList(){
+  const wrap = document.getElementById('loaiMayList');
+  wrap.innerHTML = '';
+  if(state.config.loaiMay.length === 0){
+    wrap.innerHTML = '<p class="empty-msg">Chưa có loại máy nào.</p>';
+  }
+  state.config.loaiMay.forEach((name, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    const input = document.createElement('input');
+    input.type = 'text'; input.value = name;
+    input.addEventListener('change', ()=> renameLoaiMay(idx, input.value.trim()));
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-danger'; delBtn.textContent = 'Xoá';
+    delBtn.onclick = ()=> deleteLoaiMay(idx);
+    row.appendChild(input); row.appendChild(delBtn);
+    wrap.appendChild(row);
+  });
+}
+
+function renameLoaiMay(idx, newName){
+  if(!newName) return;
+  const oldName = state.config.loaiMay[idx];
+  if(newName === oldName) return;
+  if(state.config.loaiMay.includes(newName)){
+    showToast('Tên loại máy đã tồn tại.', 'error');
+    renderAdminLoaiMayList();
+    return;
+  }
+  state.config.loaiMay[idx] = newName;
+  state.config.models[newName] = state.config.models[oldName] || [];
+  state.config.vatTu[newName] = state.config.vatTu[oldName] || [];
+  delete state.config.models[oldName];
+  delete state.config.vatTu[oldName];
+  if(state.editingLoaiMay === oldName) state.editingLoaiMay = newName;
+  renderEditLoaiMaySelect();
+  renderModelList();
+  renderVatTuAdminList();
+}
+
+function deleteLoaiMay(idx){
+  const name = state.config.loaiMay[idx];
+  if(!confirm(`Xoá loại máy "${name}"? (Sheet dữ liệu cũ trên Google Sheet sẽ KHÔNG bị xoá)`)) return;
+  state.config.loaiMay.splice(idx,1);
+  delete state.config.models[name];
+  delete state.config.vatTu[name];
+  if(state.editingLoaiMay === name) state.editingLoaiMay = state.config.loaiMay[0] || null;
+  renderAdminLoaiMayList();
+  renderEditLoaiMaySelect();
+  renderModelList();
+  renderVatTuAdminList();
+}
+
+document.getElementById('btnAddLoaiMay').addEventListener('click', ()=>{
+  const input = document.getElementById('newLoaiMayInput');
+  const name = input.value.trim();
+  if(!name) return;
+  if(state.config.loaiMay.includes(name)){
+    showToast('Loại máy đã tồn tại.', 'error'); return;
+  }
+  state.config.loaiMay.push(name);
+  state.config.models[name] = [];
+  state.config.vatTu[name] = [];
+  input.value = '';
+  state.editingLoaiMay = name;
+  renderAdminLoaiMayList();
+  renderEditLoaiMaySelect();
+  renderModelList();
+  renderVatTuAdminList();
+});
+
+/* ---- chọn loại máy để sửa model/vật tư ---- */
+function renderEditLoaiMaySelect(){
+  const sel = document.getElementById('editLoaiMaySelect');
+  sel.innerHTML = '';
+  state.config.loaiMay.forEach(name=>{
+    sel.appendChild(new Option(name, name, false, name === state.editingLoaiMay));
+  });
+  if(state.config.loaiMay.length && !state.config.loaiMay.includes(state.editingLoaiMay)){
+    state.editingLoaiMay = state.config.loaiMay[0];
+    sel.value = state.editingLoaiMay;
+  }
+}
+document.getElementById('editLoaiMaySelect').addEventListener('change', (e)=>{
+  state.editingLoaiMay = e.target.value;
+  renderModelList();
+  renderVatTuAdminList();
+});
+
+/* ---- Model management ---- */
+function renderModelList(){
+  document.getElementById('editingForModel').textContent = state.editingLoaiMay ? `— ${state.editingLoaiMay}` : '';
+  const wrap = document.getElementById('modelList');
+  wrap.innerHTML = '';
+  if(!state.editingLoaiMay){ wrap.innerHTML = '<p class="empty-msg">Chưa có loại máy.</p>'; return; }
+  const list = state.config.models[state.editingLoaiMay] || [];
+  if(list.length === 0){
+    wrap.innerHTML = '<p class="empty-msg">Chưa có model nào.</p>';
+  }
+  list.forEach((name, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    const input = document.createElement('input');
+    input.type = 'text'; input.value = name;
+    input.addEventListener('change', ()=>{
+      const v = input.value.trim();
+      if(v) list[idx] = v;
+      renderModelList();
+    });
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-danger'; delBtn.textContent = 'Xoá';
+    delBtn.onclick = ()=>{ list.splice(idx,1); renderModelList(); };
+    row.appendChild(input); row.appendChild(delBtn);
+    wrap.appendChild(row);
+  });
+}
+document.getElementById('btnAddModel').addEventListener('click', ()=>{
+  if(!state.editingLoaiMay){ showToast('Vui lòng chọn loại máy trước.', 'error'); return; }
+  const input = document.getElementById('newModelInput');
+  const name = input.value.trim();
+  if(!name) return;
+  state.config.models[state.editingLoaiMay] = state.config.models[state.editingLoaiMay] || [];
+  state.config.models[state.editingLoaiMay].push(name);
+  input.value = '';
+  renderModelList();
+});
+
+/* ---- Vật tư management ---- */
+function renderVatTuAdminList(){
+  document.getElementById('editingForVatTu').textContent = state.editingLoaiMay ? `— ${state.editingLoaiMay}` : '';
+  const wrap = document.getElementById('vatTuAdminList');
+  wrap.innerHTML = '';
+  if(!state.editingLoaiMay){ wrap.innerHTML = '<p class="empty-msg">Chưa có loại máy.</p>'; return; }
+  const list = state.config.vatTu[state.editingLoaiMay] || [];
+  if(list.length === 0){
+    wrap.innerHTML = '<p class="empty-msg">Chưa có vật tư nào.</p>';
+  }
+  list.forEach((name, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    const input = document.createElement('input');
+    input.type = 'text'; input.value = name;
+    input.addEventListener('change', ()=>{
+      const v = input.value.trim();
+      if(v) list[idx] = v;
+      renderVatTuAdminList();
+    });
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-danger'; delBtn.textContent = 'Xoá';
+    delBtn.onclick = ()=>{ list.splice(idx,1); renderVatTuAdminList(); };
+    row.appendChild(input); row.appendChild(delBtn);
+    wrap.appendChild(row);
+  });
+}
+document.getElementById('btnAddVatTuItem').addEventListener('click', ()=>{
+  if(!state.editingLoaiMay){ showToast('Vui lòng chọn loại máy trước.', 'error'); return; }
+  const input = document.getElementById('newVatTuInput');
+  const name = input.value.trim();
+  if(!name) return;
+  state.config.vatTu[state.editingLoaiMay] = state.config.vatTu[state.editingLoaiMay] || [];
+  state.config.vatTu[state.editingLoaiMay].push(name);
+  input.value = '';
+  renderVatTuAdminList();
+});
+
+/* ---- Save config to server ---- */
+document.getElementById('btnSaveConfig').addEventListener('click', async ()=>{
+  if(!state.scriptUrl){
+    showToast('Vui lòng nhập & lưu link Script trước.', 'error');
+    return;
+  }
+  const btn = document.getElementById('btnSaveConfig');
+  btn.disabled = true; btn.textContent = 'Đang lưu...';
+  try{
+    const res = await fetch(state.scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'saveConfig', config: state.config })
+    });
+    const data = await res.json();
+    if(data.success){
+      cacheConfig(state.config);
+      renderLoaiMaySelect();
+      showToast('Đã lưu cấu hình lên Google Sheet!', 'success');
+    } else {
+      showToast('Lỗi khi lưu: ' + (data.error || ''), 'error');
+    }
+  }catch(err){
+    showToast('Không kết nối được Google Sheet.', 'error');
+  }finally{
+    btn.disabled = false; btn.textContent = 'Lưu cấu hình lên Google Sheet';
+  }
+});
+
+/* ---------------- Init ---------------- */
+(function init(){
+  document.getElementById('ngay').valueAsDate = new Date();
+  renderLoaiMaySelect();
+  if(state.scriptUrl) loadConfigFromServer(true);
+})();
 </script>
 </body>
 </html>
